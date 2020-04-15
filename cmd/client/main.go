@@ -1,11 +1,13 @@
-package main
+package client
 
 import (
 	"context"
-	"google.golang.org/grpc"
 	v1 "gorpc/api/proto/v1"
 	"log"
 	"time"
+
+	"github.com/spf13/cobra"
+	"google.golang.org/grpc"
 )
 
 const (
@@ -13,7 +15,22 @@ const (
 	apiVersion = "v1"
 )
 
-func main()  {
+func NewCmdClient() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:    "client",
+		Short:  `call grpc server`,
+		Long:   ``,
+		PreRun: preRun,
+		Run:    run,
+	}
+	return cmd
+}
+
+func preRun(c *cobra.Command, args []string) {
+
+}
+
+func run(c *cobra.Command, args []string) {
 	// get configuration
 	//address := flag.String("server", "", "gRPC server in format host:port")
 	//flag.Parse()
@@ -25,17 +42,16 @@ func main()  {
 	}
 	defer conn.Close()
 
-	c := v1.NewTestServiceClient(conn)
+	client := v1.NewTestServiceClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	req := v1.GetRequest{
 		Id: 12,
 	}
-	res, err := c.Get(ctx, &req)
+	res, err := client.Get(ctx, &req)
 	if err != nil {
 		log.Fatalf("Create failed: %v", err)
 	}
 	log.Printf("Create result: <%+v>\n\n", res)
-
 }

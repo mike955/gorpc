@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"gorpc/cmd/client"
 	"gorpc/cmd/server"
 
 	"github.com/spf13/cobra"
@@ -15,5 +16,6 @@ func NewCmdGorpc() *cobra.Command {
 	}
 
 	cmd.AddCommand(server.NewCmdServer())
+	cmd.AddCommand(client.NewCmdClient())
 	return cmd
 }
