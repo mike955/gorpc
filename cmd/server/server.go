@@ -18,11 +18,11 @@ func NewCmdServer() *cobra.Command {
 	return cmd
 }
 
-func preRun(c *cobra.Command, args []string)  {
-	
+func preRun(c *cobra.Command, args []string) {
+
 }
 
-func run(c *cobra.Command, args []string)  {
+func run(c *cobra.Command, args []string) {
 	ctx := context.Background()
 	v1API := v1.NewTestServer()
 	if err := grpc.RunServer(ctx, v1API); err != nil {

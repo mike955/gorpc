@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"google.golang.org/grpc/reflection"
 	v1 "gorpc/api/proto/v1"
 	"log"
 	"net"
@@ -23,6 +24,7 @@ func RunServer(ctx context.Context, v1API v1.TestServiceServer) error {
 		panic(err)
 	}
 	server := grpc.NewServer()
+	reflection.Register(server)
 	v1.RegisterTestServiceServer(server, v1API)
 
 	// graceful shutdown

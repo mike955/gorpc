@@ -7,14 +7,11 @@ import (
 )
 
 type testServer struct {
-	bar string
 }
 
 // NewTestServer
 func NewTestServer() v1.TestServiceServer {
-	return &testServer{
-		bar: "faa",
-	}
+	return &testServer{}
 }
 
 func (s *testServer) Get(ctx context.Context, req *v1.GetRequest) (*v1.GetResponse, error) {
