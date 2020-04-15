@@ -2,12 +2,12 @@ package grpc
 
 import (
 	"context"
+	v1 "gorpc/api/proto/v1"
 	"log"
 	"net"
 	"os"
 	"os/signal"
-
-	v1 "gorpc/api/proto/v1"
+	"syscall"
 
 	"google.golang.org/grpc"
 )
@@ -27,13 +27,18 @@ func RunServer(ctx context.Context, v1API v1.TestServiceServer) error {
 
 	// graceful shutdown
 	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
+	signal.Notify(c, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
 	go func() {
-		for range c {
-			// sig is a ^C, handle it
+		s := <-c
+		log.Println("get a signal %s", s.String())
+		switch s {
+		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
 			log.Println("shutting down grpc server ...")
 			server.GracefulStop()
-			<-ctx.Done()
+			return
+		case syscall.SIGHUP:
+		default:
+			return
 		}
 	}()
 
